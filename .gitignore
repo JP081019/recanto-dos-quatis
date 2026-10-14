@@ -10,3 +10,5 @@ playwright-report/
 .vercel/
 *.tsbuildinfo
 cinema/renders/
+
+.vercel
