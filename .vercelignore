@@ -6,7 +6,10 @@ node_modules/
 docs/
 scripts/
 tests/
-cinema/
+# Only ignore offline rendering sources at the repository root.
+# public/cinema/flight must be uploaded: it contains the runtime frames.
+/cinema/
+/.serena/
 test-results/
 playwright-report/
 *.tsbuildinfo
