@@ -1,0 +1,14 @@
+{
+  "frames": 72,
+  "desktop": [
+    1280,
+    720
+  ],
+  "mobile": [
+    540,
+    960
+  ],
+  "type": "property-flight",
+  "scene": "src/three/property-scene.mjs",
+  "photography": false
+}

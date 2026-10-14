@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+test-results/
+playwright-report/
+.env*.local
+.env
+.env.*
+!.env.example
+.vercel/
+*.tsbuildinfo
+cinema/renders/

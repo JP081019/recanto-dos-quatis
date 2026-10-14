@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#a9c4ce;overflow:hidden}canvas{display:block}</style></head><body><script type="module">
+import * as THREE from '/node_modules/three/build/three.module.js';
+import {createProperty,cameraPose,configureScene,configureRenderer} from '/src/three/property-scene.mjs';
+const params=new URLSearchParams(location.search),width=Number(params.get('w'))||1280,height=Number(params.get('h'))||720;
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(width,height);renderer.setPixelRatio(1);configureRenderer(renderer,THREE);document.body.appendChild(renderer.domElement);
+const scene=new THREE.Scene();configureScene(scene,THREE);scene.add(createProperty(THREE));
+const camera=new THREE.PerspectiveCamera(45,width/height,.1,1500);
+window.renderFrame=(progress,selection='overview')=>{const pose=cameraPose(width/height,progress,selection);camera.fov=pose.fov;camera.updateProjectionMatrix();camera.position.set(...pose.position);camera.lookAt(...pose.target);renderer.render(scene,camera);};
+window.renderFrame(0);renderer.shadowMap.autoUpdate=false;window.ready=true;
+</script></body></html>

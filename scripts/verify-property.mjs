@@ -1,0 +1,30 @@
+import { chromium } from '@playwright/test';
+import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
+await mkdir('docs/qa-v2',{recursive:true});
+const browser=await chromium.launch({channel:'chrome',headless:true,args:['--enable-unsafe-swiftshader']});
+try{
+  const page=await browser.newPage({viewport:{width:1440,height:900},reducedMotion:'reduce'});
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('http://localhost:3000',{waitUntil:'networkidle'});
+  await page.waitForSelector('.property-explorer.is-ready');
+  await page.waitForFunction(()=>document.querySelector('.live-property canvas')?.dataset.cameraSettled==='true');
+  const initial=await page.locator('.live-property canvas').getAttribute('data-camera-position');
+  assert.equal(await page.locator('#inicio img[src*="/images/"]').count(),0);
+  await page.screenshot({path:'docs/qa-v2/maquette-overview.png'});
+  await page.locator('.property-options button').first().click();
+  await page.waitForFunction(()=>document.querySelector('.live-property canvas')?.dataset.selection==='01'&&document.querySelector('.live-property canvas')?.dataset.cameraSettled==='true');
+  assert.notEqual(await page.locator('.live-property canvas').getAttribute('data-camera-position'),initial);
+  assert.match(await page.locator('.explorer-panel').innerText(),/4 camas de solteiro/);
+  await page.screenshot({path:'docs/qa-v2/maquette-01.png'});
+  await page.getByRole('button',{name:'Conhecer a outra hospedagem'}).click();
+  await page.waitForFunction(()=>document.querySelector('.live-property canvas')?.dataset.selection==='02');
+  assert.match(await page.locator('.panel-heading').innerText(),/Hospedagem 02/);
+  await page.locator('.explorer-panel a[href="#reservas"]').click();
+  assert.equal(await page.locator('[name=accommodation]').inputValue(),'02');
+  await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+  await page.getByRole('button',{name:'Voltar à visão geral',exact:true}).first().click();
+  await page.waitForFunction(()=>document.querySelector('.live-property canvas')?.dataset.selection==='overview');
+  assert.equal(errors.length,0,errors.join('\n'));
+  console.log('PASS: live maquette, both buildings, actual camera movement, overview return, room panel and reservation selection.');
+}finally{await browser.close();}

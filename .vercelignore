@@ -1,0 +1,15 @@
+.git/
+.next/
+node_modules/
+.env
+.env.*
+docs/
+scripts/
+tests/
+cinema/
+test-results/
+playwright-report/
+*.tsbuildinfo
+public/cinema/desktop/
+public/cinema/mobile/
+public/cinema/manifest.json
